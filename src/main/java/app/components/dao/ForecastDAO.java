@@ -15,13 +15,23 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Класс работы с погодными данными из БД.
+ * @author Сергей Солдатов
+ * @version 1.0
+ */
 @Repository
 public class ForecastDAO {
 
+    /** Поле менеджера entity-объектов */
     @PersistenceContext
     private EntityManager entityManager;
 
+    /**
+     * Процедура сохранения в БД объектов города и прогноза для него
+     * @param city - город
+     * @param forecast - прогноз погоды
+     */
     @Transactional
     public void saveCityAndForecast(City city, Forecast forecast){
         City oldCity = entityManager.find(City.class, city.getId());
@@ -33,6 +43,11 @@ public class ForecastDAO {
         entityManager.persist(forecast);
     }
 
+    /**
+     * Функция поиска в БД города по названию
+     * @param name - название города
+     * @return возвращает объект города
+     */
     public City getCity(String name){
         List<City> result = new ArrayList<>();
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -49,6 +64,11 @@ public class ForecastDAO {
         throw new CityNotFoundException("City " + name + " not found!");
     }
 
+    /**
+     * Функция поиска в БД последнего прогноза погоды для города по его названию
+     * @param name - название города
+     * @return возвращает объект прогноза
+     */
     public Forecast getForecast(String name){
         Forecast forecast = new Forecast();
         List<Forecast> result = new ArrayList<>();

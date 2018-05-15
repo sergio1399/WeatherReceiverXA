@@ -13,10 +13,13 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -29,7 +32,10 @@ import static org.junit.Assert.*;
                       loader=AnnotationConfigContextLoader.class)
 @Transactional(transactionManager = "transactionManager")
 @Rollback
-public class ForecastDAOTest extends AbstractJUnit4SpringContextTests {
+public class ForecastDAOTest extends AbstractTransactionalJUnit4SpringContextTests {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private ForecastDAO dao;
@@ -63,9 +69,12 @@ public class ForecastDAOTest extends AbstractJUnit4SpringContextTests {
         forecast.setCity(city);
         dao.saveCityAndForecast(city, forecast);
 
+
+
         City savedCity = dao.getCity("Perth");
         Assert.assertEquals(" WA", savedCity.getRegion());
         Assert.assertEquals("Australia", savedCity.getCountry());
     }
+
 
 }
